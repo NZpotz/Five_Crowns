@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Five Crowns – Scoring</title>
+<style>
+:root{
+  --bg1:#1a0c2b; --bg2:#3a0f5f;
+  --panel:rgba(255,255,255,.08);
+  --stroke:rgba(255,255,255,.18);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.72);
+  --gold:#f0c86a; --good:#52ffb3; --warn:#ffcc66; --red:#ff334a;
+  --shadow:0 12px 40px rgba(0,0,0,.35);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);min-height:100vh;
+  background:radial-gradient(1200px 700px at 20% 10%, rgba(255,79,216,.18), transparent 60%),
+             radial-gradient(900px 600px at 90% 20%, rgba(240,200,106,.18), transparent 55%),
+             radial-gradient(900px 600px at 45% 95%, rgba(82,255,179,.10), transparent 60%),
+             linear-gradient(135deg,var(--bg1),var(--bg2));
+  overflow-x:hidden;
+}
+header{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);background:rgba(10,5,20,.55);border-bottom:1px solid var(--stroke);}
+.wrap{max-width:1200px;margin:0 auto;padding:14px 16px;}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+h1{margin:0;font-size:18px;display:flex;align-items:center;gap:10px;}
+.badge{font-size:12px;padding:6px 10px;border:1px solid rgba(240,200,106,.35);background:rgba(240,200,106,.12);border-radius:999px;color:var(--gold);white-space:nowrap;}
+.pill{font-size:12px;padding:7px 10px;border:1px solid var(--stroke);background:rgba(255,255,255,.06);border-radius:999px;color:var(--muted);white-space:nowrap;}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px;margin-top:14px;}
+@media (max-width:980px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--panel);border:1px solid var(--stroke);border-radius:var(--radius);box-shadow:var(--shadow);}
+.card>.hd{padding:12px 14px;border-bottom:1px solid var(--stroke);display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
+.card>.bd{padding:14px;}
+.btn{border:1px solid var(--stroke);background:rgba(255,255,255,.07);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer;transition:background .15s,border-color .15s,transform .05s;font-weight:800;}
+.btn:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.28);} .btn:active{transform:scale(.99);} 
+.btn.primary{border-color:rgba(240,200,106,.35);background:rgba(240,200,106,.18);} .btn.danger{border-color:rgba(255,90,122,.35);background:rgba(255,90,122,.14);} .btn.small{padding:8px 10px;border-radius:10px;font-size:12px;}
+input,select{border:1px solid var(--stroke);background:rgba(0,0,0,.20);color:var(--text);padding:10px 12px;border-radius:12px;outline:none;max-width:100%;}
+label{font-size:12px;color:var(--muted);} .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.field{display:flex;flex-direction:column;gap:6px;min-width:180px;}
+.nameGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px;}
+@media (max-width:980px){.nameGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:560px){.nameGrid{grid-template-columns:1fr;}}
+.setupRow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.hint{margin-top:12px;padding:10px 12px;border-radius:14px;border:1px solid rgba(240,200,106,.22);background:rgba(240,200,106,.08);color:rgba(255,255,255,.86);font-size:13px;}
+.scoreGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+@media (max-width:980px){.scoreGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:560px){.scoreGrid{grid-template-columns:1fr;}.wrap{padding:12px 10px;}}
+.scoreBox{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);border-radius:14px;padding:12px;}
+.scoreTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.playerName{font-weight:950;letter-spacing:.2px;}
+.scoreRow{display:flex;gap:8px;align-items:center;max-width:100%;}
+.scoreRow input{flex:1 1 auto;min-width:0;} /* important: avoid overflow */
+@media (max-width:420px){.scoreRow{gap:6px;}.btn.small{padding:8px 8px;}}
+
+table{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;}
+th,td{border-bottom:1px solid rgba(255,255,255,.12);padding:10px 10px;text-align:left;font-size:13px;}
+th{color:rgba(255,255,255,.75);font-weight:900;} tr:last-child td{border-bottom:none;} .right{text-align:right;}
+.winRow{background:linear-gradient(90deg, rgba(82,255,179,.18), transparent 60%);outline:1px solid rgba(82,255,179,.18);} 
+.leadTag{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(82,255,179,.35);background:rgba(82,255,179,.10);color:var(--good);} 
+.toast{position:fixed;right:14px;bottom:14px;z-index:60;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(10,5,20,.75);backdrop-filter:blur(10px);box-shadow:var(--shadow);max-width:360px;transform:translateY(18px);opacity:0;pointer-events:none;transition:all .25s ease;}
+.toast.show{transform:translateY(0);opacity:1;} .toast .t{font-weight:950} .toast .m{font-size:13px;color:var(--muted);margin-top:2px;}
+.wildBanner{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,204,102,.28);background:rgba(255,204,102,.10);margin-top:12px;}
+.wildLabel{font-weight:950;color:var(--warn);font-size:16px;} .wildValue{font-weight:1000;color:var(--red);font-size:34px;line-height:1;}
+.startShell{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:16px;}
+.page{display:none;} .page.active{display:block;} #leaderboardAnchor{scroll-margin-top:86px;}
+
+/* Quick Score modal */
+.qs-overlay{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);} 
+.qs-overlay.show{display:flex;}
+.qs-modal{width:min(520px,100%);border-radius:16px;border:1px solid rgba(255,255,255,.18);background:rgba(10,5,20,.85);box-shadow:var(--shadow);overflow:hidden;}
+.qs-hd{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.14);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+.qs-title{font-weight:950;} .qs-sub{font-size:12px;color:rgba(255,255,255,.70);margin-top:2px;}
+.qs-bd{padding:12px 14px 14px;}
+.qs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media (max-width:420px){.qs-grid{grid-template-columns:repeat(3,1fr);}}
+.qs-card{background:rgba(255,255,255,.95);color:#111;border-radius:10px;padding:8px 6px 10px;text-align:center;cursor:pointer;user-select:none;box-shadow:0 3px 8px rgba(0,0,0,.25);} .qs-card:active{transform:translateY(1px)}
+.qs-rank{font-family:Georgia,"Times New Roman",Times,serif;font-size:26px;font-weight:900;line-height:1;}
+.qs-value{font-size:11px;color:#666;margin-top:2px;} .qs-count{margin-top:6px;font-size:13px;font-weight:800;}
+.qs-scoreBox{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.10);display:flex;justify-content:space-between;align-items:center;}
+.qs-scoreBox .label{font-size:13px;opacity:0.85} .qs-scoreBox .score{font-size:26px;font-weight:950}
+.qs-actions{margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="row">
+      <h1>Five Crowns – Scoring <span class="badge" id="leaderBadge">Not started</span></h1>
+      <div class="toolbar">
+        <span class="pill" id="roundPill">Round: –</span>
+        <span class="pill" id="wildPill">Wild: –</span>
+        <button class="btn small" id="btnExportCsv">Export CSV</button>
+        <button class="btn small" id="btnImportCsv">Import CSV</button>
+        <button class="btn small danger" id="btnReset">Reset</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="startPage" class="page active">
+  <div class="startShell">
+    <div class="card" style="width:min(960px,100%);">
+      <div class="hd">
+        <div>
+          <div style="font-weight:1000;font-size:20px;">Start a new game</div>
+          <div class="tiny">Scores update live. Manual entry or Quick Score button.</div>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="setupRow">
+          <div class="field" style="min-width:220px;">
+            <label>Number of players (max 9)</label>
+            <select id="playerCount"></select>
+          </div>
+        </div>
+        <div class="nameGrid" id="nameGrid"></div>
+        <div class="toolbar" style="margin-top:14px;">
+          <button class="btn primary" id="btnStartGame">Start game</button>
+        </div>
+        <div class="hint">Scoring reminder: number cards = face value, J=11, Q=12, K=13, Joker=50, current wild rank = 20 points.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="gamePage" class="page">
+  <div class="wrap">
+    <div class="grid">
+      <section class="card">
+        <div class="hd">
+          <div>
+            <div style="font-weight:950;">Players</div>
+            <div class="tiny" id="playersLine">–</div>
+          </div>
+          <div class="toolbar"><button class="btn" id="btnEditPlayers">Edit players</button></div>
+        </div>
+        <div class="bd">
+          <div class="setupRow">
+            <div class="field" style="min-width:240px;">
+              <label>Current round</label>
+              <select id="roundSelect"></select>
+            </div>
+            <button class="btn" id="btnPrev">Prev</button>
+            <button class="btn" id="btnNext">Next</button>
+          </div>
+          <div class="wildBanner">
+            <div class="wildLabel">Wild card this round:</div>
+            <div class="wildValue" id="wildBig">–</div>
+          </div>
+          <div style="margin-top:12px;font-weight:950;">Enter scores for this round</div>
+          <div class="tiny" style="margin:6px 0 10px 0;">Enter jumps to the next box. Quick Score opens a card-tap calculator.</div>
+          <div class="scoreGrid" id="scoreGrid"></div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="hd" id="leaderboardAnchor">
+          <div>
+            <div style="font-weight:950;">Ranking</div>
+            <div class="tiny">Lowest total is leading. Ties show multiple leaders.</div>
+          </div>
+        </div>
+        <div class="bd">
+          <div id="leaderboard"></div>
+          <div style="margin-top:12px;">
+            <div class="tiny">Cumulative totals (blank until a round is fully entered)</div>
+            <div style="margin-top:8px;overflow:auto;"><table id="historyTable"></table></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="t" id="toastTitle">Title</div><div class="m" id="toastMsg">Message</div></div>
+
+<!-- Quick Score Modal -->
+<div class="qs-overlay" id="qsOverlay" aria-hidden="true">
+  <div class="qs-modal" role="dialog" aria-modal="true" aria-labelledby="qsTitle">
+    <div class="qs-hd">
+      <div>
+        <div class="qs-title" id="qsTitle">Five Crowns – Quick Score</div>
+        <div class="qs-sub" id="qsSub">Tap cards to add points. Wild = 20, Joker = 50.</div>
+      </div>
+      <div class="toolbar"><button class="btn small" id="qsClose">Close</button></div>
+    </div>
+    <div class="qs-bd">
+      <div class="qs-grid" id="qsGrid"></div>
+      <div class="qs-scoreBox"><div class="label">Total</div><div class="score" id="qsTotal">0</div></div>
+      <div class="qs-actions">
+        <button class="btn small" id="qsReset">Reset</button>
+        <button class="btn small" id="qsUse">Use score</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MAX_PLAYERS = 9;
+const MAX_ROUNDS = 11;
+const STORAGE_KEY = 'fiveCrownsScore.v8';
+
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function roundToWildRank(roundIndex1){
+  const r = 2 + roundIndex1; // 3..13
+  if(r <= 10) return String(r);
+  if(r === 11) return 'J';
+  if(r === 12) return 'Q';
+  return 'K';
+}
+
+function newDefaultState(){
+  return {
+    started:false,
+    playerCount:5,
+    players:Array.from({length:5}, (_,i)=>({name:`Player ${i+1}`})),
+    currentRound:1,
+    scores:Array.from({length:MAX_ROUNDS}, ()=> Array.from({length:MAX_PLAYERS}, ()=> null))
+  };
+}
+
+function loadState(){
+  try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; }
+  catch(e){ return null; }
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+let state = loadState() || newDefaultState();
+
+// UI refs
+const startPage = $('#startPage');
+const gamePage = $('#gamePage');
+const playerCountSel = $('#playerCount');
+const nameGrid = $('#nameGrid');
+const roundSelect = $('#roundSelect');
+const scoreGrid = $('#scoreGrid');
+const leaderboard = $('#leaderboard');
+const historyTable = $('#historyTable');
+const playersLine = $('#playersLine');
+const leaderBadge = $('#leaderBadge');
+const roundPill = $('#roundPill');
+const wildPill = $('#wildPill');
+const wildBig = $('#wildBig');
+
+// toast
+const toast = $('#toast');
+const toastTitle = $('#toastTitle');
+const toastMsg = $('#toastMsg');
+let toastTimer = null;
+function showToast(title, msg){
+  toastTitle.textContent = title;
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toast.classList.remove('show'), 2300);
+}
+
+// Quick Score modal
+const qsOverlay = $('#qsOverlay');
+const qsGrid = $('#qsGrid');
+const qsTotalEl = $('#qsTotal');
+const qsSub = $('#qsSub');
+
+const qsCards = [
+  { label:'3', value:3 },{ label:'4', value:4 },{ label:'5', value:5 },{ label:'6', value:6 },
+  { label:'7', value:7 },{ label:'8', value:8 },{ label:'9', value:9 },{ label:'10', value:10 },
+  { label:'J', value:11 },{ label:'Q', value:12 },{ label:'K', value:13 },{ label:'Wild', value:20 },{ label:'Joker', value:50 }
+];
+const qsCounts = {};
+let qsActivePlayerIndex = null;
+
+function qsRender(){
+  qsGrid.innerHTML='';
+  let total=0;
+  qsCards.forEach(c => {
+    const count = qsCounts[c.label] || 0;
+    total += count * c.value;
+    const d = document.createElement('div');
+    d.className='qs-card';
+    d.innerHTML = `<div class="qs-rank">${c.label}</div><div class="qs-value">${c.value} pts</div><div class="qs-count">× ${count}</div>`;
+    d.onclick = () => { qsCounts[c.label] = count + 1; qsRender(); };
+    qsGrid.appendChild(d);
+  });
+  qsTotalEl.textContent = total;
+}
+function qsResetAll(){ for(const k in qsCounts) delete qsCounts[k]; qsRender(); }
+function qsOpen(playerIndex){
+  qsActivePlayerIndex = playerIndex;
+  const wildRank = roundToWildRank(state.currentRound);
+  qsSub.textContent = `Tap cards to add points. Wild = ${wildRank}s (20), Joker = 50.`;
+  qsResetAll();
+  qsOverlay.classList.add('show');
+  qsOverlay.setAttribute('aria-hidden','false');
+}
+function qsCloseModal(){
+  qsOverlay.classList.remove('show');
+  qsOverlay.setAttribute('aria-hidden','true');
+  qsActivePlayerIndex = null;
+}
+function qsUseScore(){
+  if(qsActivePlayerIndex === null) return;
+  const idx = qsActivePlayerIndex; // capture before close
+  const score = Number(qsTotalEl.textContent) || 0;
+  const rIdx = state.currentRound - 1;
+  state.scores[rIdx][idx] = score;
+  saveState();
+  renderAllGameBits();
+  qsCloseModal();
+  setTimeout(()=>{
+    const next = document.querySelector(`input[data-score-index=\"${idx + 1}\"]`);
+    if(next){ next.focus(); next.select(); }
+  }, 80);
+}
+$('#qsClose').onclick = qsCloseModal;
+$('#qsReset').onclick = qsResetAll;
+$('#qsUse').onclick = qsUseScore;
+qsOverlay.addEventListener('click', e => { if(e.target === qsOverlay) qsCloseModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && qsOverlay.classList.contains('show')) qsCloseModal(); });
+qsRender();
+
+// dropdowns
+function initDropdowns(){
+  playerCountSel.innerHTML='';
+  for(let i=1;i<=MAX_PLAYERS;i++){
+    const o=document.createElement('option');
+    o.value=i; o.textContent=`${i} player${i===1?'':'s'}`;
+    playerCountSel.appendChild(o);
+  }
+  playerCountSel.value = String(state.playerCount);
+
+  roundSelect.innerHTML='';
+  for(let r=1;r<=MAX_ROUNDS;r++){
+    const dealt = 2 + r;
+    const o=document.createElement('option');
+    o.value=r; o.textContent=`Round ${r} (${dealt} cards)`;
+    roundSelect.appendChild(o);
+  }
+  roundSelect.value = String(state.currentRound);
+}
+
+function applyPlayers(n){
+  const old = state.players.slice();
+  state.playerCount = n;
+  state.players = Array.from({length:n}, (_,i)=>({name: old[i]?.name || `Player ${i+1}`}));
+}
+
+function setPage(which){
+  startPage.classList.toggle('active', which==='start');
+  gamePage.classList.toggle('active', which==='game');
+}
+
+function totalsAllEntered(){
+  const totals = Array.from({length: state.playerCount}, ()=>0);
+  for(let r=0;r<MAX_ROUNDS;r++){
+    for(let i=0;i<state.playerCount;i++){
+      const v = state.scores[r][i];
+      if(Number.isFinite(v)) totals[i] += v;
+    }
+  }
+  return totals;
+}
+
+function minTotalAndLeaders(totals){
+  if(!totals.length) return {min:0, leaders:[]};
+  const min = Math.min(...totals);
+  const leaders = totals.map((t,i)=>({t,i})).filter(x=>x.t===min).map(x=>x.i);
+  return {min, leaders};
+}
+
+function isRoundComplete(roundIndex0){
+  for(let i=0;i<state.playerCount;i++){
+    const v = state.scores[roundIndex0][i];
+    if(!Number.isFinite(v)) return false;
+  }
+  return true;
+}
+
+function scrollToLeaderboard(){ $('#leaderboardAnchor').scrollIntoView({behavior:'smooth', block:'start'}); }
+
+function renderStart(){
+  initDropdowns();
+  nameGrid.innerHTML='';
+  for(let i=0;i<state.playerCount;i++){
+    const div=document.createElement('div');
+    div.className='field';
+    div.innerHTML = `<label>Player ${i+1} name</label><input data-name-index=\"${i}\" value=\"${escapeHtml(state.players[i].name)}\" />`;
+    nameGrid.appendChild(div);
+  }
+  $$('input[data-name-index]').forEach(inp => {
+    inp.oninput = () => { state.players[Number(inp.dataset.nameIndex)].name = inp.value; saveState(); };
+  });
+  leaderBadge.textContent='Not started';
+  roundPill.textContent='Round: –';
+  wildPill.textContent='Wild: –';
+}
+
+function renderHeader(){
+  if(!state.started){
+    leaderBadge.textContent='Not started';
+    roundPill.textContent='Round: –';
+    wildPill.textContent='Wild: –';
+    return;
+  }
+  const r = state.currentRound;
+  const dealt = 2 + r;
+  const wild = roundToWildRank(r);
+  roundPill.textContent = `Round: ${r} (${dealt} cards)`;
+  wildPill.textContent = `Wild: ${wild}s`;
+  wildBig.textContent = `${wild}s`;
+
+  const totals = totalsAllEntered();
+  const {min, leaders} = minTotalAndLeaders(totals);
+  const leaderNames = leaders.map(i=>state.players[i].name).join(', ');
+  leaderBadge.textContent = leaders.length ? `Leading: ${leaderNames} (${min} pts)` : 'No players';
+}
+
+function renderPlayersLine(){ playersLine.textContent = state.players.map(p=>p.name).join(' • '); }
+
+function renderScores(){
+  scoreGrid.innerHTML='';
+  const rIdx = state.currentRound - 1;
+  const totals = totalsAllEntered();
+  const {leaders} = minTotalAndLeaders(totals);
+  const leaderSet = new Set(leaders);
+
+  for(let i=0;i<state.playerCount;i++){
+    const cur = state.scores[rIdx][i];
+    const val = Number.isFinite(cur) ? cur : '';
+    const isLeaderNow = leaderSet.has(i);
+
+    const box=document.createElement('div');
+    box.className='scoreBox';
+    box.innerHTML = `
+      <div class=\"scoreTop\">
+        <div>
+          <div class=\"playerName\">${escapeHtml(state.players[i].name)} ${isLeaderNow ? '<span class=\"leadTag\">👑 Leading</span>' : ''}</div>
+          <div class=\"tiny\">Total: <b>${totals[i]}</b></div>
+        </div>
+        <div class=\"pill\">Round ${state.currentRound}</div>
+      </div>
+      <label>Round score</label>
+      <div class=\"scoreRow\">
+        <input type=\"number\" inputmode=\"numeric\" min=\"0\" step=\"1\" data-score-index=\"${i}\" value=\"${val}\" />
+        <button class=\"btn small\" type=\"button\" data-calc-index=\"${i}\">Quick</button>
+      </div>
+    `;
+    scoreGrid.appendChild(box);
+  }
+
+  $$('button[data-calc-index]').forEach(btn => {
+    btn.onclick = () => qsOpen(Number(btn.dataset.calcIndex));
+  });
+
+  const inputs = $$('input[data-score-index]');
+  const focusNext = (i) => { const next = inputs[i+1]; if(next){ next.focus(); next.select(); } else { scrollToLeaderboard(); } };
+
+  inputs.forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if(e.key !== 'Enter') return;
+      e.preventDefault();
+      focusNext(Number(inp.dataset.scoreIndex));
+    });
+
+    inp.addEventListener('change', () => {
+      // move focus after entry (mobile friendly)
+      if(inp.value !== '') focusNext(Number(inp.dataset.scoreIndex));
+    });
+
+    inp.addEventListener('input', () => {
+      const i = Number(inp.dataset.scoreIndex);
+      const raw = inp.value;
+      const beforeComplete = isRoundComplete(rIdx);
+      state.scores[rIdx][i] = raw === '' ? null : Number(raw);
+      if(Number.isFinite(state.scores[rIdx][i]) && state.scores[rIdx][i] < 0) state.scores[rIdx][i] = 0;
+      saveState();
+      renderHeader();
+      renderLeaderboard();
+      renderHistory();
+      const afterComplete = isRoundComplete(rIdx);
+      if(!beforeComplete && afterComplete) scrollToLeaderboard();
+    });
+  });
+}
+
+function renderLeaderboard(){
+  if(state.playerCount < 1){ leaderboard.innerHTML = '<div class="tiny">Add players.</div>'; return; }
+  const totals = totalsAllEntered();
+  const {min} = minTotalAndLeaders(totals);
+
+  const list = Array.from({length: state.playerCount}, (_,i)=>({idx:i,name:state.players[i].name,total:totals[i]}))
+    .sort((a,b)=>a.total-b.total || a.name.localeCompare(b.name));
+
+  let out = `<table><thead><tr><th>Rank</th><th>Player</th><th class=\"right\">Total</th></tr></thead><tbody>`;
+  let lastScore = null, lastRank = 0;
+  list.forEach((p,k)=>{
+    const rank = (lastScore === p.total) ? lastRank : (k+1);
+    lastScore = p.total; lastRank = rank;
+    const lead = (p.total === min);
+    out += `<tr class=\"${lead?'winRow':''}\"><td>#${rank}</td><td>${escapeHtml(p.name)} ${lead?' 👑':''}</td><td class=\"right\">${p.total}</td></tr>`;
+  });
+  out += `</tbody></table>`;
+  leaderboard.innerHTML = out;
+}
+
+function renderHistory(){
+  if(state.playerCount < 1){ historyTable.innerHTML=''; return; }
+  let thead = '<thead><tr><th>Round</th>';
+  for(let i=0;i<state.playerCount;i++) thead += `<th class=\"right\">${escapeHtml(state.players[i].name)}</th>`;
+  thead += '<th class=\"right\">Leader</th></tr></thead>';
+
+  let tbody = '<tbody>';
+  const running = Array.from({length: state.playerCount}, ()=>0);
+
+  for(let r=1;r<=MAX_ROUNDS;r++){
+    const rIdx = r-1;
+    const complete = isRoundComplete(rIdx);
+    if(complete){
+      for(let i=0;i<state.playerCount;i++) running[i] += state.scores[rIdx][i];
+    }
+    tbody += `<tr><td>${r}</td>`;
+    for(let i=0;i<state.playerCount;i++) tbody += `<td class=\"right\">${complete ? running[i] : ''}</td>`;
+    if(complete){
+      const {leaders} = minTotalAndLeaders(running);
+      const names = leaders.map(i=>state.players[i].name).join(', ');
+      tbody += `<td class=\"right\">${escapeHtml(names)}</td>`;
+    }else{
+      tbody += `<td class=\"right\"></td>`;
+    }
+    tbody += `</tr>`;
+  }
+  tbody += '</tbody>';
+  historyTable.innerHTML = thead + tbody;
+}
+
+function renderAllGameBits(){
+  renderHeader();
+  renderPlayersLine();
+  renderScores();
+  renderLeaderboard();
+  renderHistory();
+}
+
+function renderGame(){
+  initDropdowns();
+  renderAllGameBits();
+}
+
+// CSV
+function csvEscape(v){
+  const s = String(v ?? '');
+  if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function exportCsv(){
+  if(state.playerCount < 1){ showToast('Export CSV', 'No players.'); return; }
+  const lines=[];
+  lines.push('five_crowns_score_csv,v2');
+  lines.push(['players', state.playerCount, ...state.players.slice(0,state.playerCount).map(p=>p.name)].map(csvEscape).join(','));
+  lines.push('round,wild,player,score');
+  for(let r=1;r<=MAX_ROUNDS;r++){
+    const wild = roundToWildRank(r);
+    for(let i=0;i<state.playerCount;i++){
+      const score = state.scores[r-1][i];
+      lines.push([r, wild, state.players[i].name, Number.isFinite(score)?score:''].map(csvEscape).join(','));
+    }
+  }
+  const csv='\ufeff' + lines.join('\n');
+  const blob=new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='five-crowns-scores.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function parseCsv(text){
+  const rows=[]; let i=0, field='', row=[], inQuotes=false;
+  const pushField=()=>{row.push(field); field='';};
+  const pushRow=()=>{rows.push(row); row=[];};
+  while(i<text.length){
+    const ch=text[i];
+    if(inQuotes){
+      if(ch==='"'){
+        if(text[i+1]==='"'){ field+='"'; i++; }
+        else inQuotes=false;
+      }else field+=ch;
+    }else{
+      if(ch==='"') inQuotes=true;
+      else if(ch===',') pushField();
+      else if(ch==='\n'){ pushField(); pushRow(); }
+      else if(ch==='\r'){}
+      else field+=ch;
+    }
+    i++;
+  }
+  pushField();
+  if(row.length>1 || row[0]!== '') pushRow();
+  return rows;
+}
+
+function importCsvFile(file){
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const text=String(reader.result||'').replace(/^\ufeff/,'');
+      const rows=parseCsv(text).filter(r=>r.some(x=>String(x).trim()!==''));
+      if(rows.length<3) throw new Error('too few');
+      if((rows[0][0]||'').trim()!=='five_crowns_score_csv') throw new Error('bad header');
+      const ver=(rows[0][1]||'').trim();
+      if(ver!=='v2' && ver!=='v1') throw new Error('bad version');
+      const pr=rows[1];
+      if((pr[0]||'').trim()!=='players') throw new Error('missing players');
+      const count=Math.min(MAX_PLAYERS, Math.max(1, Number(pr[1])));
+      const names=pr.slice(2,2+count).map(s=>String(s||'').trim()||'Player');
+
+      state=newDefaultState();
+      state.playerCount=count;
+      state.players=names.map(n=>({name:n}));
+      state.scores=Array.from({length:MAX_ROUNDS}, ()=> Array.from({length:MAX_PLAYERS}, ()=> null));
+      state.currentRound=1;
+      state.started=true;
+
+      for(let k=3;k<rows.length;k++){
+        const r=rows[k];
+        const round=Number(r[0]);
+        const playerName=String(r[2]||'').trim();
+        const scoreRaw=String(r[3]||'').trim();
+        if(!Number.isFinite(round) || round<1 || round>MAX_ROUNDS) continue;
+        const pIdx=state.players.findIndex(p=>p.name===playerName);
+        if(pIdx<0) continue;
+        if(scoreRaw==='') continue;
+        const score=Number(scoreRaw);
+        if(Number.isFinite(score) && score>=0) state.scores[round-1][pIdx]=score;
+      }
+
+      saveState();
+      setPage('game');
+      renderGame();
+      showToast('CSV imported','Game loaded.');
+    }catch(e){
+      showToast('Import failed','CSV format not recognised.');
+    }
+  };
+  reader.onerror=()=>showToast('Import failed','Could not read the file.');
+  reader.readAsText(file);
+}
+
+// Events
+playerCountSel.onchange=()=>{ const n=Math.min(MAX_PLAYERS, Math.max(1, Number(playerCountSel.value))); applyPlayers(n); saveState(); renderStart(); };
+$('#btnStartGame').onclick=()=>{
+  for(let i=0;i<state.playerCount;i++){
+    const n=(state.players[i].name||'').trim();
+    if(!n){ showToast('Player name needed',`Player ${i+1} needs a name.`); return; }
+    state.players[i].name=n;
+  }
+  state.started=true; saveState(); setPage('game'); renderGame();
+  showToast('Game started','Enter Round 1 scores.');
+  setTimeout(()=>{ const first=$('input[data-score-index="0"]'); if(first){ first.focus(); first.select(); } }, 120);
+};
+$('#btnEditPlayers').onclick=()=>{ state.started=false; saveState(); setPage('start'); renderStart(); };
+roundSelect.onchange=()=>{ state.currentRound=Number(roundSelect.value); saveState(); renderHeader(); renderScores(); };
+$('#btnPrev').onclick=()=>{ state.currentRound=Math.max(1,state.currentRound-1); roundSelect.value=String(state.currentRound); saveState(); renderHeader(); renderScores(); };
+$('#btnNext').onclick=()=>{ state.currentRound=Math.min(MAX_ROUNDS,state.currentRound+1); roundSelect.value=String(state.currentRound); saveState(); renderHeader(); renderScores(); };
+$('#btnExportCsv').onclick=exportCsv;
+$('#btnImportCsv').onclick=()=>{ const inp=document.createElement('input'); inp.type='file'; inp.accept='.csv,text/csv'; inp.onchange=()=>{ const f=inp.files&&inp.files[0]; if(f) importCsvFile(f); }; inp.click(); };
+$('#btnReset').onclick=()=>{ localStorage.removeItem(STORAGE_KEY); state=newDefaultState(); saveState(); setPage('start'); renderStart(); showToast('Reset','Game cleared.'); };
+
+// Boot
+state.playerCount=Math.min(MAX_PLAYERS, Math.max(1, Number(state.playerCount||5)));
+if(!Array.isArray(state.players) || state.players.length!==state.playerCount) applyPlayers(state.playerCount);
+if(!Array.isArray(state.scores) || state.scores.length!==MAX_ROUNDS) state.scores=Array.from({length:MAX_ROUNDS}, ()=> Array.from({length:MAX_PLAYERS}, ()=> null));
+
+saveState();
+initDropdowns();
+if(state.started){ setPage('game'); renderGame(); } else { setPage('start'); renderStart(); }
+</script>
+</body>
+</html>
